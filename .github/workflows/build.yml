@@ -3,14 +3,36 @@ name: Build Flet APK
 on: [push]
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Build APK
-        uses: flet-dev/flet-build-action@v1
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          target: apk
-          runner-python-version: "3.11"
-          bundled-python-version: "3.11"
-          build-number: ${{ github.run_number }}
+          python-version: '3.11'
+
+      - name: Install Java (JDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet
+
+      - name: Build Android APK
+        run: flet build apk --project-name misa
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: misa-apk
+          path: build/apk/*.apk
