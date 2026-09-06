@@ -3,20 +3,14 @@ name: Build Flet APK
 on: [push]
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flet
       - name: Build APK
-        run: flet build apk --project-name misa
-      - uses: actions/upload-artifact@v4
+        uses: flet-dev/flet-build-action@v1
         with:
-          name: app-apk
-          path: build/apk/*.apk
+          target: apk
+          runner-python-version: "3.11"
+          bundled-python-version: "3.11"
+          build-number: ${{ github.run_number }}
