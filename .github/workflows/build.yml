@@ -20,4 +20,10 @@ jobs:
           pip install flet
 
       - name: Build Android APK
-        run: flet build apk --project-name misa --verbose
+        run: flet build apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: misa-apk
+          path: build/apk/*.apk
